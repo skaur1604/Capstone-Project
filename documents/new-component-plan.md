@@ -30,3 +30,11 @@ This feature demonstrates my understanding of:
        file: req.file,
      });
    });
+
+## Milestone 2
+
+-- Firestore Integration: Uploaded image URL is now saved in the corresponding recipe document.
+-- TypeScript Compliance: Added typing for request and response objects for safer, maintainable code.
+-- Error Handling: Returns proper status codes for missing files (400) and server errors (500).
+-- Swagger Documentation: Added JSDoc comments for the /recipes/:id/upload endpoint, enabling interactive testing via Swagger UI.
+-- Demo-Ready: Users can upload images and verify them in-browser using the URL returned in the API response.

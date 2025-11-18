@@ -15,3 +15,4 @@ apis: ["./src/routes/*.ts"],
 
 const swaggerSpec = swaggerJsdoc(options);
 export default swaggerSpec;
+
