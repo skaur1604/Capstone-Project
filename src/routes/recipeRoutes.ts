@@ -1,22 +1,26 @@
 import express from "express";
-import { getAllRecipes, getRecipeById, createRecipe, updateRecipe, deleteRecipe, filterRecipes } from "../controllers/recipeController";
+import * as recipeController from "../controllers/recipeController"; 
 import upload from "../middleware/upload";
 import { authenticate as authMiddleware } from "../middleware/auth";
-import { requireOwnershipOrAdmin } from "../middleware/ownership";
-
 
 const router = express.Router();
 
-router.get("/", getAllRecipes);
-router.get("/:id", getRecipeById);
-router.post("/", authMiddleware, createRecipe);
-router.put("/:id", authMiddleware, updateRecipe);
-router.delete("/:id", authMiddleware, requireOwnershipOrAdmin("id"), deleteRecipe);
-router.get("/filter", filterRecipes);
+router.get("/filter", recipeController.filterRecipes);
+router.get("/", recipeController.getAllRecipes);
+router.get("/:id", recipeController.getRecipeById);
+router.put("/:id", authMiddleware, recipeController.updateRecipe);
+router.delete("/:id", authMiddleware, recipeController.deleteRecipe);
 
-router.post("/:id/upload", authMiddleware, upload.single("image"), (req, res) => {
-  res.status(200).json({ message: "Image uploaded successfully", file: req.file });
-});
+router.post(
+  "/:id/upload",
+  authMiddleware,
+  upload.single("image"),
+  (req, res) => {
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+    res.status(200).json({ message: "Image uploaded successfully", file: req.file });
+  }
+);
 
 export default router;
-

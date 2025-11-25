@@ -3,7 +3,6 @@ import { addIngredient, getIngredients } from "../controllers/ingredientControll
 
 const router = Router();
 
-
 router.post("/:recipeId/ingredients", addIngredient);
 router.get("/:recipeId/ingredients", getIngredients);
 
