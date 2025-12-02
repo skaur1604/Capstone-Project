@@ -1,8 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import * as admin from "firebase-admin";
 
+interface CustomClaims {
+  roles?: string[];
+  [key: string]: any;
+}
+
 export interface AuthRequest extends Request {
-  user?: admin.auth.DecodedIdToken;
+  user?: admin.auth.DecodedIdToken & CustomClaims;
 }
 
 export const authenticate = async (
@@ -10,14 +15,11 @@ export const authenticate = async (
   res: Response,
   next: NextFunction
 ) => {
-
-  if (process.env.NODE_ENV === "test") {
-    return next();
-  }
+  if (process.env.NODE_ENV === "test") return next();
 
   const header = req.headers.authorization;
 
-  if (!header || !header.startsWith("Bearer ")) {
+  if (!header?.toLowerCase().startsWith("bearer ")) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
@@ -26,7 +28,7 @@ export const authenticate = async (
   try {
     const decoded = await admin.auth().verifyIdToken(token);
     req.user = decoded;
-    return next();
+    next();
   } catch (err) {
     return res.status(401).json({ message: "Invalid token" });
   }
@@ -36,9 +38,8 @@ export const requireRole = (role: string) => {
   return (req: AuthRequest, res: Response, next: NextFunction) => {
     if (!req.user) return res.status(401).json({ message: "Unauthorized" });
 
-    const claims: any = req.user;
-
-    if (claims[role] === true || (claims.roles && claims.roles.includes(role))) {
+    const roles = req.user.roles || [];
+    if (req.user[role] === true || roles.includes(role)) {
       return next();
     }
 

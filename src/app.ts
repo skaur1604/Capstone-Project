@@ -14,6 +14,11 @@ app.use(express.json());
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use("/recipes", recipeRoutes);
+app.get("/items", async (req, res) => {
+});
+
+app.get("/items/low-stock", async (req, res) => {
+});
 
 app.get("/", (req, res) => {
 res.json({ message: "RecipeHub API is running" });
